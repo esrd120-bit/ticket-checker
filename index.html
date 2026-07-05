@@ -515,23 +515,27 @@ document.getElementById('submitBtn').addEventListener('click', ()=>{
     return;
   }
 
-  const payload = {
-    name, phone,
-    violation: state.violation,
-    paid: state.paid,
-    timing: state.timing,
-    submitted_at: new Date().toISOString()
+  const violationMap2 = {
+    speed_laser:'מהירות — לייזר/רדאר', speed_camera:'מהירות — מצלמת אכיפה',
+    phone:'שימוש בטלפון', dui:'שכרות/סירוב לבדיקה', cannabis:'קנאביס (THC)', other:'אחר'
+  };
+  const paidMap = {
+    not_paid:'לא שילם', paid:'כבר שילם', court_summons:'הזמנה לדין', unsure:'לא בטוח'
+  };
+  const timingMap = {
+    week:'פחות משבוע', month:'פחות מחודש', '90days':'פחות מ-90 יום', more:'יותר מ-90 יום'
   };
 
-  // ====== חיבור לאוטומציה (Make/n8n webhook) ======
-  // יש להחליף את ה-URL בכתובת ה-Webhook האמיתית מ-Make לפני שימוש בפועל
-  // fetch('https://hook.eu1.make.com/XXXXXXXXXXXXXXXX', {
-  //   method:'POST',
-  //   headers:{'Content-Type':'application/json'},
-  //   body: JSON.stringify(payload)
-  // });
+  const msg =
+`ליד חדש מהאתר 🚨
+שם: ${name}
+טלפון: ${phone}
+סוג עבירה: ${violationMap2[state.violation] || state.violation}
+סטטוס תשלום: ${paidMap[state.paid] || state.paid}
+זמן מהדוח: ${timingMap[state.timing] || state.timing}`;
 
-  console.log('Lead payload:', payload);
+  const waLink = 'https://wa.me/972556643511?text=' + encodeURIComponent(msg);
+  window.location.href = waLink;
 
   currentStep = 5;
   showStep(5);
